@@ -60,5 +60,10 @@ class rouletteView extends roulette
         
         // 템플릿 파일 지정
         $this->setTemplateFile('roulette');
+
+        // 모달 모드 지원 (레이아웃 제거)
+        if(Context::get('mode') == 'modal') {
+            Context::set('layout', 'none');
+        }
     }
 }
