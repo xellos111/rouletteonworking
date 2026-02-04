@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+    <title xml:lang="ko">룰렛 이벤트</title>
+    <description xml:lang="ko">포인트나 티켓을 사용하여 룰렛 게임을 진행하는 모듈입니다.</description>
+    <version>1.0.0</version>
+    <date>2026-02-04</date>
+    <category>service</category>
+
+    <author email_address="admin@example.com" link="https://example.com">
+        <name xml:lang="ko">Antigravity</name>
+    </author>
+
+    <extra_vars>
+        <var name="ticket_point_price" type="text">
+            <title xml:lang="ko">1회 소모 포인트</title>
+            <description xml:lang="ko">룰렛 1회 참여시 차감할 포인트를 입력하세요. (기본값: 0)</description>
+        </var>
+        <var name="items_json" type="textarea">
+            <title xml:lang="ko">아이템 설정 (JSON)</title>
+            <description xml:lang="ko">
+                룰렛 아이템을 JSON 형식으로 입력하세요.
+                예시: [ {"text":"100P", "weight":10, "is_point":true, "point":100}, ... ]
+            </description>
+        </var>
+    </extra_vars>
+</module>

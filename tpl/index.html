@@ -1,0 +1,68 @@
+<include target="_header.html" />
+
+<form action="./" method="post" ruleset="insertModuleConfig" class="x_form-horizontal">
+    <input type="hidden" name="module" value="roulette" />
+    <input type="hidden" name="act" value="procRouletteAdminInsertConfig" />
+    <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispRouletteAdminIndex')}" />
+
+    <section class="section">
+        <h1>룰렛 모듈 설정</h1>
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="ticket_point_price">1회당 소모 포인트</label>
+            <div class="x_controls">
+                <input type="number" id="ticket_point_price" name="ticket_point_price"
+                    value="{$config->ticket_point_price}" class="lang_code" />
+                <p class="x_help-block">룰렛을 1회 돌릴 때 차감할 포인트를 입력하세요. (0이면 무료)</p>
+            </div>
+        </div>
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="spin_duration">회전 속도 (초)</label>
+            <div class="x_controls">
+                <input type="number" id="spin_duration" name="spin_duration" value="{$config->spin_duration}"
+                    class="lang_code" step="0.1" />
+                <p class="x_help-block">룰렛이 멈출 때까지 걸리는 시간입니다. (기본 3초)</p>
+            </div>
+        </div>
+
+        <div class="x_control-group">
+            <label class="x_control-label" for="items_json">아이템 설정 (JSON)</label>
+            <div class="x_controls">
+                <textarea id="items_json" name="items_json" rows="10" cols="10"
+                    style="width:100%">{$config->items_json}</textarea>
+                <div class="x_help-block">
+                    <p>JSON 형식으로 아이템을 설정합니다.</p>
+                    <pre>
+[
+    {
+        "text": "1000",             // 룰렛에 표시될 큰 글씨
+        "subText": "포인트",        // 룰렛에 표시될 작은 글씨
+        "color": "#FFFFFF",         // 배경색
+        "textColor": "#6A4DFF",     // 글자색
+        "weight": 0.5,              // 당첨 확률 (가중치) - 높을수록 당첨 잘 됨
+        "is_point": true,           // 포인트 지급 여부 (true/false)
+        "point_reward": 1000        // 지급할 포인트 양 (is_point가 true일 때)
+    },
+    {
+        "text": "꽝",
+        "subText": "다음에 다시",
+        "color": "#e2e8f0",
+        "textColor": "#64748b",
+        "weight": 50,
+        "is_point": false,
+        "point_reward": 0
+    }
+]
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="x_clearfix btnArea">
+        <button type="submit" class="x_btn x_btn-primary">저장</button>
+    </div>
+</form>
+
+<include target="_footer.html" />

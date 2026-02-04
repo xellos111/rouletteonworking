@@ -1,0 +1,51 @@
+<!--%import("css/style.css")-->
+<!--%import("js/script.js")-->
+
+<div class="roulette-module">
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="title">약준모 룰렛</h1>
+            <div class="ticket-badge">
+                <span>내 포인트</span>
+                <span id="ticket-count" class="count">{$current_point}</span>
+                <span>P</span>
+            </div>
+        </header>
+
+        <!-- Roulette Section -->
+        <main class="roulette-container">
+            <div class="roulette-wrapper">
+                <!-- The Wheel Canvas -->
+                <canvas id="roulette-canvas" width="600" height="600"></canvas>
+
+                <!-- Center Play Button -->
+                <button id="spin-btn" class="spin-button" aria-label="룰렛 돌리기">
+                    <img id="spin-character" src="img/normal.png" alt="Spin" draggable="false">
+                </button>
+
+                <!-- Top Pointer -->
+                <div class="pointer"></div>
+            </div>
+        </main>
+
+        <!-- Controls -->
+        <!--
+        <div class="controls">
+            <button onclick="/* Point Charging Link? */">포인트 충전</button>
+        </div>
+        -->
+
+        <!-- Result Modal -->
+        <div class="result-overlay">
+            <div class="result-card">
+                <div class="result-title">Title</div>
+                <div class="result-value">Value</div>
+                <button id="close-result" class="close-btn">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Safe Config Injection via Hidden Textarea (Prevents syntax errors) -->
+<textarea id="roulette-config-storage" style="display:none">{$config_json}</textarea>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+    <actions>
+        <action name="dispRouletteIndex" type="view" index="true" />
+        <action name="procRouletteSpin" type="controller" />
+        
+        <!-- Admin Actions -->
+        <action name="dispRouletteAdminIndex" type="view" admin_index="true" />
+        <action name="procRouletteAdminInsertConfig" type="controller" />
+    </actions>
+</module>

@@ -1,0 +1,289 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css');
+
+/* Scope everything under .roulette-module to avoid breaking site layout */
+.roulette-module {
+    --bg-dark: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --neon-primary: #00f2ff;
+    --neon-secondary: #7000ff;
+    --korean-gradient: linear-gradient(135deg, #00f2ff 0%, #7000ff 100%);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --font-main: 'Pretendard', sans-serif;
+
+    font-family: var(--font-main);
+    background: var(--bg-dark);
+    /* Subtle grid background for tech feel */
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+
+    /* Ensure it takes up space but doesn't break flow inside a layout */
+    width: 100%;
+    min-height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+    overflow: hidden;
+    /* Prevent scrollbars from glow effects */
+    position: relative;
+}
+
+.roulette-module * {
+    box-sizing: border-box;
+}
+
+.roulette-module .app-container {
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+}
+
+/* Glass Header */
+.roulette-module .header {
+    text-align: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.roulette-module .title {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--korean-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.5));
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.roulette-module .ticket-badge {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: var(--text-muted);
+}
+
+.roulette-module .ticket-badge .count {
+    color: var(--neon-primary);
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+}
+
+/* Roulette Wrapper with Neon Glow */
+.roulette-module .roulette-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+}
+
+.roulette-module .roulette-wrapper {
+    position: relative;
+    width: 340px;
+    height: 340px;
+    max-width: 90vw;
+    max-height: 90vw;
+    border-radius: 50%;
+    box-shadow:
+        0 0 20px rgba(0, 242, 255, 0.2),
+        inset 0 0 20px rgba(112, 0, 255, 0.2);
+
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(5px);
+    border: 4px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.roulette-module canvas#roulette-canvas {
+    width: 96%;
+    height: 96%;
+    border-radius: 50%;
+    image-rendering: -webkit-optimize-contrast;
+    transition: none !important;
+    /* Prevent global CSS from interfering with JS animation */
+}
+
+/* Modern Pointer */
+.roulette-module .pointer {
+    position: absolute;
+    top: -15px;
+    z-index: 20;
+    width: 40px;
+    height: 50px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+
+.roulette-module .pointer::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 60px;
+    background: var(--neon-primary);
+    border-radius: 2px;
+    box-shadow: 0 0 15px var(--neon-primary);
+}
+
+.roulette-module .pointer::after {
+    content: '▼';
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--neon-primary);
+    font-size: 24px;
+    text-shadow: 0 0 10px var(--neon-primary);
+}
+
+
+/* Neon Spin Button */
+.roulette-module .spin-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.3));
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.roulette-module .spin-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+}
+
+.roulette-module .spin-button:hover {
+    filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.6));
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.roulette-module .spin-button:active {
+    /* No active state to prevent conflicts */
+}
+
+/* Breathing Animation */
+@keyframes breathe {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 242, 255, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3), 0 0 35px rgba(0, 242, 255, 0.3);
+    }
+}
+
+.roulette-module .spin-button:not(:active) {
+    animation: breathe 3s infinite;
+}
+
+/* Result Modal */
+.roulette-module .result-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.roulette-module .result-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.roulette-module .result-card {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid var(--neon-primary);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(0, 242, 255, 0.2);
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.roulette-module .result-overlay.active .result-card {
+    transform: scale(1);
+}
+
+.roulette-module .result-title {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.roulette-module .result-value {
+    font-size: 3rem;
+    color: var(--neon-primary);
+    font-weight: 900;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px var(--neon-primary);
+}
+
+.roulette-module .close-btn {
+    background: var(--korean-gradient);
+    border: none;
+    padding: 12px 30px;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
