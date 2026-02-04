@@ -88,6 +88,7 @@ class rouletteController extends roulette
         $output->success = true;
         $output->index = $selected_index;
         $output->item = $selected_item;
+        $output->items_list = $items; // Send the list used for calculation to ensure sync
         $output->remaining_point = $remaining_point;
         
         $this->add('result', $output);

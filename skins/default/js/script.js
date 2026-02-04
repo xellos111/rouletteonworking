@@ -223,6 +223,20 @@ class RouletteGame {
             }
 
             this.isSpinning = true;
+
+            // SYNC: Update items from server response to ensure visual matches logic
+            if (data.items_list && Array.isArray(data.items_list) && data.items_list.length > 0) {
+                // Check if items changed (count mismatch) to avoid unnecessary redraws
+                if (this.items.length !== data.items_list.length) {
+                    console.log('Syncing items with server...', data.items_list);
+                    this.items = data.items_list;
+                    this.drawWheel(); // Redraw with correct segments
+                } else {
+                    // Just update data in case colors/text changed, but length is same
+                    this.items = data.items_list;
+                }
+            }
+
             this.startSpinAnimation(data.index, data.item, data.remaining_point);
 
         }, (error) => {
