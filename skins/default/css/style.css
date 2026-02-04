@@ -188,8 +188,8 @@ body.modal-open>*:not(.roulette-module) {
 /* Luxury Pointer */
 .roulette-module .pointer {
     position: absolute;
-    top: -12px;
-    /* Adjusted position */
+    top: -22px;
+    /* Pull up to clear text */
     z-index: 20;
     width: 40px;
     /* Smaller width */
