@@ -16,12 +16,12 @@
 2. 자동 숨김: 팝업이 뜨면 '통합관리자', '포스트잇' 등의 버튼을 잠시 숨김.
 
 ```javascript
-<!-- 룰렛 모달 시스템 (Luxury Gold + 관리자 버튼 숨김) -->
+<!-- 룰렛 모달 시스템 (고성능 최적화 버전) -->
 <script>
 jQuery(document).ready(function($) {
-    // 1. 팝업용 HTML 생성
+    // 1. 팝업용 HTML 생성 (성능 최적화: 블러 제거)
     var modalHtml = 
-    '<div id="roulette-layer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(4px);">' +
+    '<div id="roulette-layer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">' +
         // 배경색: #fcf9f2 (연한 아이보리) / 테두리: #D4AF37 (골드)
         '<div style="position:relative; width:400px; max-width:95%; height:650px; max-height:85%; background:#fcf9f2; border-radius:25px; overflow:hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 2px solid #D4AF37;">' +
              // 닫기 버튼: 누르면 closeRouletteLayer 실행
