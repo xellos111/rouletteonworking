@@ -79,8 +79,20 @@ class rouletteController extends roulette
              }
         }
 
-        // 7. 로그 기록 (TODO: roulette_log 테이블이 있다면 insert)
+        // 7. 로그 기록 (DB Insert)
+        $args = new stdClass();
+        $args->module_srl = $config->module_srl ? $config->module_srl : 0; // 모듈 시리얼이 있다면 저장
+        $args->member_srl = $member_srl;
+        $args->point_spent = $price;
+        $args->reward_text = $selected_item->text . ($selected_item->subText ? ' (' . $selected_item->subText . ')' : '');
+        $args->reward_point = (isset($selected_item->is_point) && $selected_item->is_point) ? (int)$selected_item->point_reward : 0;
+        $args->ipaddress = $_SERVER['REMOTE_ADDR'];
         
+        $output_log = executeQuery('roulette.insertRouletteLog', $args);
+        if(!$output_log->toBool()) {
+           // 로그 저장은 실패해도 게임은 진행되도록 함 (조용히 넘어가거나 에러 로그만 남김)
+           // return $this->createJSONResponse(false, '로그 저장 실패'); 
+        }
         // 8. 결과 반환
         $remaining_point = $oPointModel->getPoint($member_srl);
         

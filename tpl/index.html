@@ -1,6 +1,7 @@
 <include target="_header.html" />
 
-<form action="./" method="post" ruleset="insertModuleConfig" class="x_form-horizontal">
+<form action="./" method="post" ruleset="insertModuleConfig" class="x_form-horizontal"
+    onsubmit="return syncJsonBeforeSubmit()">
     <input type="hidden" name="module" value="roulette" />
     <input type="hidden" name="act" value="procRouletteAdminInsertConfig" />
     <input type="hidden" name="success_return_url" value="{getUrl('act', 'dispRouletteAdminIndex')}" />
@@ -27,35 +28,40 @@
         </div>
 
         <div class="x_control-group">
-            <label class="x_control-label" for="items_json">아이템 설정 (JSON)</label>
-            <div class="x_controls">
-                <textarea id="items_json" name="items_json" rows="10" cols="10"
-                    style="width:100%">{$config->items_json}</textarea>
-                <div class="x_help-block">
-                    <p>JSON 형식으로 아이템을 설정합니다.</p>
-                    <pre>
-[
-    {
-        "text": "1000",             // 룰렛에 표시될 큰 글씨
-        "subText": "포인트",        // 룰렛에 표시될 작은 글씨
-        "color": "#FFFFFF",         // 배경색
-        "textColor": "#6A4DFF",     // 글자색
-        "weight": 0.5,              // 당첨 확률 (가중치) - 높을수록 당첨 잘 됨
-        "is_point": true,           // 포인트 지급 여부 (true/false)
-        "point_reward": 1000        // 지급할 포인트 양 (is_point가 true일 때)
-    },
-    {
-        "text": "꽝",
-        "subText": "다음에 다시",
-        "color": "#e2e8f0",
-        "textColor": "#64748b",
-        "weight": 50,
-        "is_point": false,
-        "point_reward": 0
-    }
-]
-                    </pre>
+            <label class="x_control-label">아이템 설정</label>
+            <div class="x_controls" style="margin-left: 0; width: 100%;">
+
+                <!-- Hidden JSON Storage -->
+                <textarea id="items_json" name="items_json" style="display:none;">{$config->items_json}</textarea>
+
+                <!-- GUI Editor -->
+                <table class="x_table x_table-striped x_table-hover" id="items-table"
+                    style="width: 100%; border: 1px solid #ddd;">
+                    <thead>
+                        <tr>
+                            <th>메인 텍스트</th>
+                            <th>보조 텍스트 (줄바꿈)</th>
+                            <th>배경색 (Hex)</th>
+                            <th>글자색 (Hex)</th>
+                            <th>가중치 (확률)</th>
+                            <th>지급 포인트 (0=없음)</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be injected by JS -->
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 10px; text-align: right;">
+                    <button type="button" class="x_btn" onclick="addItemRow()">+ 아이템 추가</button>
+                    <button type="button" class="x_btn x_btn-danger" onclick="resetToDefaults()">기본값으로 초기화</button>
                 </div>
+
+                <p class="x_help-block">
+                    * <b>가중치 (Weight)</b>: 숫자가 클수록 당첨 확률이 높아집니다.<br>
+                    * <b>지급 포인트</b>: 0보다 큰 값을 입력하면 당첨 시 해당 포인트가 지급됩니다.
+                </p>
             </div>
         </div>
     </section>
@@ -64,5 +70,125 @@
         <button type="submit" class="x_btn x_btn-primary">저장</button>
     </div>
 </form>
+
+<script>
+    // Default Items Data
+    const defaultItems = [
+        { text: "1천", subText: "캡슐", color: "#FFFFFF", textColor: "#6A4DFF", weight: 0.5, point_reward: 1000 },
+        { text: "15", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 20, point_reward: 15 },
+        { text: "25", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 20, point_reward: 25 },
+        { text: "50", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 15, point_reward: 50 },
+        { text: "100", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 15, point_reward: 100 },
+        { text: "150", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 10, point_reward: 150 },
+        { text: "200", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 10, point_reward: 200 },
+        { text: "500", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 4.5, point_reward: 500 },
+        { text: "보너스", subText: "티켓 1장", color: "#dbeafe", textColor: "#2563eb", weight: 5, point_reward: 0 }
+    ];
+
+    document.addEventListener("DOMContentLoaded", function () {
+        loadFromJSON();
+    });
+
+    function loadFromJSON() {
+        const raw = document.getElementById('items_json').value;
+        let data = [];
+        try {
+            data = JSON.parse(raw);
+        } catch (e) {
+            console.error("JSON Parse Error", e);
+        }
+
+        if (!Array.isArray(data) || data.length === 0) {
+            data = defaultItems; // Use Default if empty
+        }
+
+        renderTable(data);
+        updateJSON(); // Sync back immediately
+    }
+
+    function renderTable(data) {
+        const tbody = document.querySelector("#items-table tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(item => {
+            addItemRow(item);
+        });
+    }
+
+    function addItemRow(item = null) {
+        const tbody = document.querySelector("#items-table tbody");
+        const tr = document.createElement("tr");
+
+        // Defaults for new row
+        if (!item) {
+            item = { text: "새 항목", subText: "설명", color: "#FFFFFF", textColor: "#333333", weight: 10, point_reward: 0 };
+        }
+
+        tr.innerHTML = `
+            <td><input type="text" class="item-text" value="${escapeHtml(item.text)}" style="width: 100px;"></td>
+            <td><input type="text" class="item-subText" value="${escapeHtml(item.subText)}" style="width: 100px;"></td>
+            <td><input type="color" class="item-color" value="${item.color}"> <small>${item.color}</small></td>
+            <td><input type="color" class="item-textColor" value="${item.textColor}"> <small>${item.textColor}</small></td>
+            <td><input type="number" class="item-weight" value="${item.weight}" step="0.1" style="width: 60px;"></td>
+            <td><input type="number" class="item-point" value="${item.point_reward || 0}" style="width: 80px;"></td>
+            <td><button type="button" class="x_btn x_btn-mini" onclick="removeRow(this)">삭제</button></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        // Add Listeners for live sync
+        tr.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", updateJSON);
+            input.addEventListener("change", updateJSON); // For color pickers
+        });
+    }
+
+    function removeRow(btn) {
+        btn.closest("tr").remove();
+        updateJSON();
+    }
+
+    function resetToDefaults() {
+        if (confirm("정말로 모든 설정을 초기화하고 기본값으로 되돌리시겠습니까?")) {
+            renderTable(defaultItems);
+            updateJSON();
+        }
+    }
+
+    function updateJSON() {
+        const rows = document.querySelectorAll("#items-table tbody tr");
+        const data = [];
+
+        rows.forEach(tr => {
+            const point = parseInt(tr.querySelector(".item-point").value) || 0;
+            data.push({
+                text: tr.querySelector(".item-text").value,
+                subText: tr.querySelector(".item-subText").value,
+                color: tr.querySelector(".item-color").value,
+                textColor: tr.querySelector(".item-textColor").value,
+                weight: parseFloat(tr.querySelector(".item-weight").value) || 0,
+                is_point: point > 0, // Auto-flag
+                point_reward: point
+            });
+        });
+
+        document.getElementById('items_json').value = JSON.stringify(data);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function syncJsonBeforeSubmit() {
+        updateJSON();
+        return true;
+    }
+</script>
 
 <include target="_footer.html" />
