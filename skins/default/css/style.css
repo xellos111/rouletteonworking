@@ -53,6 +53,8 @@
     min-height: 100vh;
     background: var(--bg-dark);
     /* Ensure background is solid */
+    overflow: hidden;
+    /* Hide scrollbars */
 }
 
 .roulette-module.modal-mode .app-container {
