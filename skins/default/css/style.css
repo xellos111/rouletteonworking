@@ -276,7 +276,7 @@ body.modal-open>*:not(.roulette-module) {
     transform: translate(-50%, -50%) scale(0.95);
 }
 
-/* Result Modal - Premium Glass Card */
+/* Result Modal - Performance Optimized */
 .roulette-module .result-overlay {
     position: absolute;
     top: 0;
@@ -284,15 +284,14 @@ body.modal-open>*:not(.roulette-module) {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
-    /* Darker dim, cleaner look */
-    backdrop-filter: blur(4px);
+    /* Simple dim, NO BLUR */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 100;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
 }
 
 .roulette-module .result-overlay.active {
@@ -301,8 +300,8 @@ body.modal-open>*:not(.roulette-module) {
 }
 
 .roulette-module .result-card {
-    background: rgba(255, 255, 255, 0.90);
-    /* Semi-transparent Glass */
+    background: #ffffff;
+    /* Solid White for performance */
     border: 2px solid var(--gold-primary);
     padding: 40px;
     border-radius: 30px;
