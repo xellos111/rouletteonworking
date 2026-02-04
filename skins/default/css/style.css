@@ -48,6 +48,21 @@
     padding: 20px;
 }
 
+/* Modal Mode Overrides */
+.roulette-module.modal-mode {
+    min-height: 100vh;
+    background: var(--bg-dark);
+    /* Ensure background is solid */
+}
+
+.roulette-module.modal-mode .app-container {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    padding: 10px;
+    /* Reduce padding for small windows */
+}
+
 /* Glass Header */
 .roulette-module .header {
     text-align: center;
