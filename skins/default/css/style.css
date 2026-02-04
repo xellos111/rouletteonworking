@@ -75,6 +75,23 @@
     /* Remove white background to show full gradient/transparency */
 }
 
+/* Hide Rhymix Admin Bar & Addons in Modal */
+.roulette-module.modal-mode~div,
+.roulette-module.modal-mode~button,
+.roulette-module.modal-mode~#rhymix_admin_bar,
+.roulette-module.modal-mode~.rhymix_content_admin,
+div[class*="admin"],
+button[class*="admin"],
+#rhymix_debug_panel {
+    display: none !important;
+}
+
+/* Ideally, we target the body via iframe context if possible, but CSS here controls what's INSIDE the iframe */
+/* We will try to hide everything that is NOT the roulette module */
+body.modal-open>*:not(.roulette-module) {
+    display: none !important;
+}
+
 /* Header */
 .roulette-module .header {
     text-align: center;

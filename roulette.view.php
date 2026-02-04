@@ -62,8 +62,20 @@ class rouletteView extends roulette
         $this->setTemplateFile('roulette');
 
         // 모달 모드 지원 (레이아웃 제거)
-        if(Context::get('mode') == 'modal') {
+        if (Context::get('mode') == 'modal') {
             Context::set('layout', 'none');
+            // Force add a CSS class to body for cleaner targeting and hide admin/addon elements
+            Context::addHtmlHeader('<style>
+                #rhymix_admin_bar, .rhymix_admin_bar,
+                .xe-widget-wrapper, .xe_content_admin,
+                div[id*="admin"], div[class*="admin"],
+                a[href*="admin"], button, .postit-toggle,
+                #dok_sticker, .sticker-area
+                { display: none !important; }
+                
+                /* Restore the spin button and close button */
+                .roulette-module button { display: flex !important; }
+            </style>');
         }
     }
 }
