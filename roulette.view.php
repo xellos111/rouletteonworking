@@ -64,22 +64,16 @@ class rouletteView extends roulette
         // 모달 모드 지원 (레이아웃 제거)
         if (Context::get('mode') == 'modal') {
             Context::set('layout', 'none');
-            // Force add a CSS class to body for cleaner targeting and hide admin/addon elements
             Context::addHtmlHeader('<style>
-                /* Hide ALL known admin/widget elements */
                 #rhymix_admin_bar, .rhymix_admin_bar,
                 .xe-widget-wrapper, .xe_content_admin,
                 div[id*="admin"], div[class*="admin"],
                 a[href*="admin"], button[class*="admin"],
                 .postit-toggle, #dok_sticker, .sticker-area,
-                /* Hide the specific 'Integrated Admin' link usually found in header/footer inclusions */
                 a[href*="dispMemberAdmin"], .x_btn-primary
                 { display: none !important; }
                 
-                /* Restore the spin button and close button */
                 .roulette-module button { display: flex !important; }
-                
-                /* Center result button explicitly */
                 .roulette-module .result-card { align-items: center !important; }
             </style>');
         }
