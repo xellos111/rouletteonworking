@@ -258,7 +258,8 @@ class RouletteGame {
             return;
         }
 
-        document.getElementById('ticket-count').innerText = remainingPoints;
+        // DELAYED UPDATE: Do not update ticket-count here.
+        // document.getElementById('ticket-count').innerText = remainingPoints;
 
         const itemAngle = 360 / this.items.length;
         const targetDegreeOnCircle = (selectedIndex * itemAngle) + (itemAngle / 2);
@@ -286,12 +287,11 @@ class RouletteGame {
             diff,
             duration
         });
-
-        this.animateSpin(this.rotationAngle, newRotationAngle, duration, itemData);
+        this.animateSpin(this.rotationAngle, newRotationAngle, duration, itemData, remainingPoints);
         this.rotationAngle = newRotationAngle;
     }
 
-    animateSpin(startAngle, endAngle, duration, itemData) {
+    animateSpin(startAngle, endAngle, duration, itemData, remainingPoints) {
         const startTime = performance.now();
         const itemAngle = 360 / this.items.length;
         let lastTickSection = Math.floor(startAngle / itemAngle);
@@ -331,18 +331,23 @@ class RouletteGame {
                 this.isSpinning = false;
                 const skinPath = "modules/roulette/skins/default/img/";
                 if (charImg) charImg.src = skinPath + "dizzy.png";
-                this.showResult(itemData);
+                this.showResult(itemData, remainingPoints);
             }
         };
         requestAnimationFrame(animate);
     }
 
-    showResult(item) {
+    showResult(item, remainingPoints) {
         if (!item) {
             console.error('showResult called with null item');
             return;
         }
         console.log('Showing result for:', item);
+
+        // DELAYED UPDATE: Update Points HERE after animation
+        if (typeof remainingPoints !== 'undefined') {
+            document.getElementById('ticket-count').innerText = remainingPoints;
+        }
 
         this.playWinSound();
         const overlay = document.querySelector('.result-overlay');
