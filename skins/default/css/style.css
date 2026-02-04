@@ -1,22 +1,31 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css');
 
-/* Scope everything under .roulette-module to avoid breaking site layout */
+/* Scope everything under .roulette-module */
 .roulette-module {
-    /* LIGHT THEME VARIABLES */
+    /* LUXURY VARIABLES */
     --bg-light: #ffffff;
-    --text-main: #333333;
+    --text-main: #1e293b;
     --text-muted: #64748b;
-    --accent-color: #fca5a5;
-    /* Soft Red/Pink to match campaign/notice header */
-    --accent-dark: #ef4444;
-    --glass-bg: rgba(255, 255, 255, 0.95);
-    --border-color: #e2e8f0;
+
+    /* Gold & Luxury Palettes */
+    --gold-primary: #D4AF37;
+    --gold-light: #F1D06E;
+    --gold-dark: #A08020;
+    --gold-gradient: linear-gradient(135deg, #BF953F 0%, #FCF6BA 50%, #B38728 100%);
+    --bg-gradient: radial-gradient(circle at 50% 50%, #ffffff 0%, #fcf9f2 100%);
+    /* Subtle warmth */
+
+    --accent-red: #C92A2A;
+    /* Royal Red */
+
     --font-main: 'Pretendard', sans-serif;
 
     font-family: var(--font-main);
     background: var(--bg-light);
 
-    /* Ensure it takes up space but doesn't break flow inside a layout */
+    /* Subtle background texture */
+    background-image: var(--bg-gradient);
+
     width: 100%;
     min-height: 800px;
     display: flex;
@@ -26,7 +35,6 @@
     overflow: hidden;
     position: relative;
     border-radius: 20px;
-    /* Rounding for the module itself */
 }
 
 .roulette-module * {
@@ -38,22 +46,20 @@
     width: 100%;
     max-width: 420px;
     height: 100%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     padding: 20px;
-    background: #ffffff;
+    background: transparent;
+    /* Rely on module background */
 }
 
 /* Modal Mode Overrides */
 .roulette-module.modal-mode {
     min-height: 100vh;
     background: transparent !important;
-    /* Allow iframe background to show through */
     overflow: hidden;
-    /* Hide scrollbars */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,9 +70,8 @@
     margin: 0;
     border-radius: 0;
     padding: 10px;
-    /* Reduce padding for small windows */
     background: #ffffff;
-    /* Clean white card in modal */
+    background-image: var(--bg-gradient);
 }
 
 /* Header */
@@ -82,34 +87,40 @@
 }
 
 .roulette-module .title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--text-main);
+    font-size: 2.2rem;
+    font-weight: 900;
+    /* Metallic Gold Logic */
+    background: linear-gradient(to bottom, #CFC09F 0%, #a38956 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin: 0;
     letter-spacing: -1px;
+    filter: drop-shadow(0 2px 0px rgba(163, 137, 86, 0.3));
+    text-transform: uppercase;
 }
 
 .roulette-module .ticket-badge {
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
+    background: #fff;
+    border: 1px solid var(--gold-primary);
     padding: 8px 24px;
     border-radius: 999px;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
     color: var(--text-muted);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
 }
 
 .roulette-module .ticket-badge .count {
-    color: var(--accent-dark);
+    color: var(--gold-dark);
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 900;
 }
 
-/* Roulette Wrapper - CLEAN Style */
+/* Roulette Wrapper - LUXURY Style */
 .roulette-module .roulette-container {
     flex-grow: 1;
     display: flex;
@@ -127,33 +138,41 @@
     max-width: 90vw;
     max-height: 90vw;
     border-radius: 50%;
-    /* Soft shadow instead of neon */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 
-    background: #ffffff;
-    border: 8px solid #f1f5f9;
-    /* Light gray border ring */
+    /* Gold Border System */
+    border: 8px solid #F9F1D8;
+    /* Inner light ring */
+    box-shadow:
+        0 0 0 2px #D4AF37,
+        /* Sharp gold line */
+        0 0 0 8px #fff,
+        /* White gap */
+        0 15px 40px rgba(0, 0, 0, 0.15);
+    /* Deep shadow */
+
+    /* Subtle gradient background BEHIND the wheel */
+    background: linear-gradient(135deg, #fffcf5 0%, #fff7e6 100%);
+
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .roulette-module canvas#roulette-canvas {
-    width: 100%;
-    height: 100%;
+    width: 96%;
+    height: 96%;
     border-radius: 50%;
-    image-rendering: -webkit-optimize-contrast;
     transition: none !important;
 }
 
-/* Modern Pointer */
+/* Luxury Pointer */
 .roulette-module .pointer {
     position: absolute;
-    top: -10px;
+    top: -18px;
     z-index: 20;
-    width: 40px;
-    height: 50px;
-    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
+    width: 50px;
+    height: 60px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
 .roulette-module .pointer::before {
@@ -162,61 +181,75 @@
     left: 50%;
     top: 5px;
     transform: translateX(-50%);
-    width: 6px;
-    height: 40px;
-    background: var(--accent-dark);
-    border-radius: 3px;
+    width: 10px;
+    height: 45px;
+    /* Ruby Red or Gold? Let's go Ruby for visibility */
+    background: var(--accent-red);
+    border-radius: 4px;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--gold-primary);
 }
 
 .roulette-module .pointer::after {
     content: '▼';
     position: absolute;
-    top: 25px;
+    top: 32px;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--accent-dark);
-    font-size: 20px;
+    color: var(--accent-red);
+    font-size: 32px;
+    text-shadow: 0 2px 0px white;
 }
 
 
-/* Spin Button - Clean */
+/* Spin Button - Gold Coin Style */
 .roulette-module .spin-button {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
+    width: 86px;
+    height: 86px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 4px solid var(--border-color);
+
+    background: var(--gold-gradient);
+    border: 3px solid #fff;
     cursor: pointer;
     z-index: 30;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    box-shadow:
+        0 0 0 2px var(--gold-primary),
+        0 10px 20px rgba(212, 175, 55, 0.4);
+
     transition: all 0.2s ease;
     overflow: hidden;
+    animation: shine 3s infinite linear;
 }
 
 .roulette-module .spin-button img {
     width: 90%;
     height: 90%;
     object-fit: contain;
+    mix-blend-mode: multiply;
+    /* Blend character into gold */
+    opacity: 0.8;
 }
 
 .roulette-module .spin-button:hover {
-    transform: translate(-50%, -50%) scale(1.05);
-    border-color: var(--accent-dark);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow:
+        0 0 0 2px var(--gold-primary),
+        0 15px 30px rgba(212, 175, 55, 0.6);
 }
 
 .roulette-module .spin-button:active {
     transform: translate(-50%, -50%) scale(0.95);
 }
 
-/* Result Modal - Clean Card */
+/* Result Modal - Premium Card */
 .roulette-module .result-overlay {
     position: absolute;
     top: 0;
@@ -224,8 +257,7 @@
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.85);
-    /* Light overlay */
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -242,14 +274,16 @@
 
 .roulette-module .result-card {
     background: #ffffff;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--gold-primary);
+    /* Gold Border */
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 30px;
     text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-width: 280px;
+    background-image: var(--bg-gradient);
 }
 
 .roulette-module .result-overlay.active .result-card {
@@ -257,30 +291,40 @@
 }
 
 .roulette-module .result-title {
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--gold-dark);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .roulette-module .result-value {
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: var(--text-main);
     font-weight: 900;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
 }
 
 .roulette-module .close-btn {
-    background: var(--text-main);
+    background: var(--gold-gradient);
     border: none;
-    padding: 12px 30px;
-    color: #fff;
+    padding: 15px 40px;
+    color: #5c450a;
+    /* Dark text on gold */
     border-radius: 12px;
-    font-weight: bold;
-    font-size: 1rem;
+    font-weight: 800;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    transition: all 0.2s;
 }
 
 .roulette-module .close-btn:hover {
-    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
 }
