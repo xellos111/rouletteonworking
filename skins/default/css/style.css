@@ -55,7 +55,7 @@
     /* Rely on module background */
 }
 
-/* Modal Mode Overrides */
+/* Modal Mode Overrides - FIXED: Transparent container */
 .roulette-module.modal-mode {
     min-height: 100vh;
     background: transparent !important;
@@ -69,9 +69,10 @@
     max-width: 100%;
     margin: 0;
     border-radius: 0;
-    padding: 10px;
-    background: #ffffff;
-    background-image: var(--bg-gradient);
+    padding: 0;
+    /* Remove padding to fill the modal */
+    background: transparent;
+    /* Remove white background to show full gradient/transparency */
 }
 
 /* Header */
@@ -84,6 +85,8 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
+    margin-top: 20px;
+    /* Add margin since padding was removed */
 }
 
 .roulette-module .title {
@@ -249,15 +252,16 @@
     transform: translate(-50%, -50%) scale(0.95);
 }
 
-/* Result Modal - Premium Card */
+/* Result Modal - Premium Glass Card */
 .roulette-module .result-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.4);
+    /* Darker dim, cleaner look */
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -273,9 +277,9 @@
 }
 
 .roulette-module .result-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.90);
+    /* Semi-transparent Glass */
     border: 2px solid var(--gold-primary);
-    /* Gold Border */
     padding: 40px;
     border-radius: 30px;
     text-align: center;
@@ -283,7 +287,6 @@
     transform: scale(0.9);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-width: 280px;
-    background-image: var(--bg-gradient);
 }
 
 .roulette-module .result-overlay.active .result-card {
