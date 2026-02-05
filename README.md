@@ -59,22 +59,37 @@
 *   짧은주소(mid)를 생성했다면: `http://일반주소/mid_name`
 
 ### 3. 모달(팝업)로 띄우기 (고급)
-이 모듈은 기본적으로 **전체 페이지** 형태로 동작합니다. 만약 현재 보고 있는 페이지 위에 팝업처럼 띄우고 싶다면 **레이아웃 스크립트**나 **위젯**을 이용해 Iframe으로 호출하거나, 레이아웃을 `기본(Blank)`로 설정하여 새창으로 띄우는 것을 권장합니다.
+이 모듈은 기본적으로 **전체 페이지** 형태로 동작하지만, 레이아웃에 아래 스크립트를 추가하면 **팝업**처럼 띄울 수 있습니다.
 
----
+**[레이아웃 스크립트 추가 방법]**
+라이믹스 관리자 > 사이트 디자인 설정 > 레이아웃 설정 > **'스크립트/스타일'** 탭의 **'하단 스크립트'**란에 붙여넣으세요.
 
-## 📂 파일 구조 및 개발 정보
+```html
+<!-- 룰렛 모달 스크립트 -->
+<script>
+jQuery(document).ready(function($) {
+    if($('#roulette-layer').length == 0) {
+        var modalHtml = 
+        '<div id="roulette-layer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">' +
+            '<div style="position:relative; width:400px; max-width:95%; height:650px; max-height:85%; background:#fcf9f2; border-radius:25px; overflow:hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 2px solid #555;">' +
+                 '<button onclick="jQuery(\'#roulette-layer\').hide();" style="position:absolute; top:15px; right:15px; z-index:100; background:rgba(0,0,0,0.2); border:none; width:32px; height:32px; border-radius:50%; color:#fff; font-size:20px; cursor:pointer;">&times;</button>' +
+                '<iframe src="" id="roulette-frame" style="width:100%; height:100%; border:none; background:transparent;" scrolling="no"></iframe>' +
+            '</div>' +
+        '</div>';
+        $('body').append(modalHtml);
+    }
 
-*   **`conf/`**: 모듈 설정 파일 (`info.xml`, `module.xml`) - 구형 XE 표준 호환
-*   **`skins/default/`**: 프론트엔드 디자인 파일
-    *   `roulette.html`: 뷰 템플릿 (HTML 구조)
-    *   `css/style.css`: 네온 스타일 디자인 (Scoped to `.rx-roulette-app`)
-    *   `js/script.js`: 룰렛 게임 로직 (Canvas Drawing, Animation)
-*   **`roulette.controller.php`**: 핵심 로직
-    *   `procRoulettePlay`: 룰렛 실행, 확률 계산, 티켓 차감, 포인트 지급, 로그 저장.
-*   **`schemas/`**:
-    *   `rx_roulette_tickets`: 유저별 티켓 보유량 저장.
-    *   `rx_roulette_log`: 누가 언제 무엇을 당첨받았는지 기록.
+    window.openRouletteLayer = function() {
+        var frame = $('#roulette-frame');
+        if(frame.attr('src') === "") {
+            frame.attr('src', '/?act=dispRouletteIndex'); 
+        }
+        $('#roulette-layer').css('display', 'flex');
+    };
+});
+</script>
+```
+버튼에는 `<button onclick="openRouletteLayer()">룰렛 열기</button>` 처럼 사용하시면 됩니다.
 
 ---
 
@@ -90,4 +105,4 @@ A. `skins/default/css/style.css` 파일이 제대로 로드되지 않은 것일 
 A. 설정된 모든 아이템의 **Weight(가중치)** 총합을 구한 뒤, 랜덤 난수가 어느 구간에 속하는지로 결정됩니다. 가중치가 높을수록 당첨 확률이 비례하여 올라갑니다.
 
 ---
-**제작**: Antigravity (2026)
+**제작**: Xellos with antigravity (2026)
