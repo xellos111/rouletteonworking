@@ -39,7 +39,9 @@ class rouletteController extends roulette
         }
 
         $current_tickets = $oAMissionModel->getTicketCount($member_srl);
-        $ticket_cost = 1; // Always 1 ticket per spin
+        // Use configured price as ticket cost (fallback to 1 if not set or 0)
+        $setting_cost = (int)$config->ticket_point_price;
+        $ticket_cost = ($setting_cost > 0) ? $setting_cost : 1; 
 
         if ($current_tickets < $ticket_cost) {
             return $this->createJSONResponse(false, '티켓이 부족합니다.');
@@ -75,22 +77,33 @@ class rouletteController extends roulette
              $selected_item = $items[0];
         }
 
-        // 6. 보상 지급 (포인트인 경우)
-        // is_point가 true이고 point_reward가 설정되어 있으면 지급
-        if (isset($selected_item->is_point) && $selected_item->is_point && isset($selected_item->point_reward)) {
-        if ($reward > 0) {
-                 $oPointController = getController('point');
-                 $oPointController->setPoint($member_srl, $reward, 'add');
-             }
+        // 6. 보상 지급 Logic
+        $reward_value = isset($selected_item->value) ? (int)$selected_item->value : 0;
+        $reward_type = isset($selected_item->type) ? $selected_item->type : 'point';
+
+        // Legacy compatibility: validity check
+        if (!isset($selected_item->type) && isset($selected_item->point_reward) && $selected_item->point_reward > 0) {
+            $reward_type = 'point';
+            $reward_value = (int)$selected_item->point_reward;
+        }
+
+        if ($reward_value > 0) {
+            if ($reward_type === 'point') {
+                $oPointController = getController('point');
+                $oPointController->setPoint($member_srl, $reward_value, 'add');
+            } elseif ($reward_type === 'ticket') {
+                // [Ticket Reward] "One More!"
+                $oAMissionController->addTicket($member_srl, $reward_value, 'Roulette Prize: ' . $selected_item->text);
+            }
         }
 
         // 7. 로그 기록 (DB Insert)
         $args = new stdClass();
-        $args->module_srl = $config->module_srl ? $config->module_srl : 0; // 모듈 시리얼이 있다면 저장
+        $args->module_srl = $config->module_srl ? $config->module_srl : 0;
         $args->member_srl = $member_srl;
-        $args->point_spent = 0; // No points spent (Tickets used)
+        $args->point_spent = 0; // Tickets used
         $args->reward_text = $selected_item->text . ($selected_item->subText ? ' (' . $selected_item->subText . ')' : '');
-        $args->reward_point = (isset($selected_item->is_point) && $selected_item->is_point) ? (int)$selected_item->point_reward : 0;
+        $args->reward_point = ($reward_type === 'point') ? $reward_value : 0; 
         $args->ipaddress = $_SERVER['REMOTE_ADDR'];
         
         $output_log = executeQuery('roulette.insertRouletteLog', $args);
@@ -98,8 +111,9 @@ class rouletteController extends roulette
         // 7-2. A-Mission Game Log (Economy Tracking)
         $game_args = new stdClass();
         $game_args->member_srl = $member_srl;
-        $game_args->spent_tickets = 1; // Hardcoded 1 ticket
-        $game_args->won_points = $args->reward_point; // From selected item
+        $game_args->spent_tickets = $ticket_cost; 
+        $game_args->won_points = ($reward_type === 'point') ? $reward_value : 0;
+        $game_args->won_tickets = ($reward_type === 'ticket') ? $reward_value : 0;
         $game_args->regdate = date('YmdHis');
         
         executeQuery('a_mission.insertGameLog', $game_args);

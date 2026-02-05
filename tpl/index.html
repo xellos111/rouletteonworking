@@ -10,11 +10,11 @@
         <h1>룰렛 모듈 설정</h1>
 
         <div class="x_control-group">
-            <label class="x_control-label" for="ticket_point_price">1회당 소모 포인트</label>
+            <label class="x_control-label" for="ticket_point_price">1회당 소모 티켓</label>
             <div class="x_controls">
                 <input type="number" id="ticket_point_price" name="ticket_point_price"
                     value="{$config->ticket_point_price}" class="lang_code" />
-                <p class="x_help-block">룰렛을 1회 돌릴 때 차감할 포인트를 입력하세요. (0이면 무료)</p>
+                <p class="x_help-block">룰렛을 1회 돌릴 때 차감할 티켓 수를 입력하세요. (기본: 1)</p>
             </div>
         </div>
 
@@ -44,7 +44,8 @@
                             <th>배경색 (Hex)</th>
                             <th>글자색 (Hex)</th>
                             <th>가중치 (확률)</th>
-                            <th>지급 포인트 (0=없음)</th>
+                            <th>보상 타입</th>
+                            <th>수량 (Value)</th>
                             <th>관리</th>
                         </tr>
                     </thead>
@@ -60,7 +61,7 @@
 
                 <p class="x_help-block">
                     * <b>가중치 (Weight)</b>: 숫자가 클수록 당첨 확률이 높아집니다.<br>
-                    * <b>지급 포인트</b>: 0보다 큰 값을 입력하면 당첨 시 해당 포인트가 지급됩니다.
+                    * <b>보상 타입</b>: Point(포인트 지급) 또는 Ticket(티켓 지급)을 선택하세요.
                 </p>
             </div>
         </div>
@@ -74,15 +75,15 @@
 <script>
     // Default Items Data
     const defaultItems = [
-        { text: "1천", subText: "캡슐", color: "#FFFFFF", textColor: "#6A4DFF", weight: 0.5, point_reward: 1000 },
-        { text: "15", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 20, point_reward: 15 },
-        { text: "25", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 20, point_reward: 25 },
-        { text: "50", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 15, point_reward: 50 },
-        { text: "100", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 15, point_reward: 100 },
-        { text: "150", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 10, point_reward: 150 },
-        { text: "200", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 10, point_reward: 200 },
-        { text: "500", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 4.5, point_reward: 500 },
-        { text: "보너스", subText: "티켓 1장", color: "#dbeafe", textColor: "#2563eb", weight: 5, point_reward: 0 }
+        { text: "1천", subText: "캡슐", color: "#FFFFFF", textColor: "#6A4DFF", weight: 0.5, type: "point", value: 1000 },
+        { text: "15", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 20, type: "point", value: 15 },
+        { text: "25", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 20, type: "point", value: 25 },
+        { text: "50", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 15, type: "point", value: 50 },
+        { text: "100", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 15, type: "point", value: 100 },
+        { text: "150", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 10, type: "point", value: 150 },
+        { text: "200", subText: "캡슐", color: "#FFFFFF", textColor: "#333", weight: 10, type: "point", value: 200 },
+        { text: "500", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 4.5, type: "point", value: 500 },
+        { text: "한번 더!", subText: "티켓 1장", color: "#dbeafe", textColor: "#2563eb", weight: 5, type: "ticket", value: 1 }
     ];
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -121,7 +122,12 @@
 
         // Defaults for new row
         if (!item) {
-            item = { text: "새 항목", subText: "설명", color: "#FFFFFF", textColor: "#333333", weight: 10, point_reward: 0 };
+            item = { text: "새 항목", subText: "설명", color: "#FFFFFF", textColor: "#333333", weight: 10, type: "point", value: 0 };
+        }
+        // Migration for old data
+        if (!item.type) {
+            item.type = (item.is_point && item.point_reward > 0) ? 'point' : 'point';
+            item.value = item.point_reward || 0;
         }
 
         tr.innerHTML = `
@@ -130,16 +136,22 @@
             <td><input type="color" class="item-color" value="${item.color}"> <small>${item.color}</small></td>
             <td><input type="color" class="item-textColor" value="${item.textColor}"> <small>${item.textColor}</small></td>
             <td><input type="number" class="item-weight" value="${item.weight}" step="0.1" style="width: 60px;"></td>
-            <td><input type="number" class="item-point" value="${item.point_reward || 0}" style="width: 80px;"></td>
+            <td>
+                <select class="item-type" style="width: 80px;">
+                    <option value="point" ${item.type === 'point' ? 'selected' : ''}>Point</option>
+                    <option value="ticket" ${item.type === 'ticket' ? 'selected' : ''}>Ticket</option>
+                </select>
+            </td>
+            <td><input type="number" class="item-value" value="${item.value || 0}" style="width: 80px;"></td>
             <td><button type="button" class="x_btn x_btn-mini" onclick="removeRow(this)">삭제</button></td>
         `;
 
         tbody.appendChild(tr);
 
         // Add Listeners for live sync
-        tr.querySelectorAll("input").forEach(input => {
+        tr.querySelectorAll("input, select").forEach(input => {
             input.addEventListener("input", updateJSON);
-            input.addEventListener("change", updateJSON); // For color pickers
+            input.addEventListener("change", updateJSON);
         });
     }
 
@@ -160,15 +172,20 @@
         const data = [];
 
         rows.forEach(tr => {
-            const point = parseInt(tr.querySelector(".item-point").value) || 0;
+            const type = tr.querySelector(".item-type").value;
+            const val = parseInt(tr.querySelector(".item-value").value) || 0;
+
             data.push({
                 text: tr.querySelector(".item-text").value,
                 subText: tr.querySelector(".item-subText").value,
                 color: tr.querySelector(".item-color").value,
                 textColor: tr.querySelector(".item-textColor").value,
                 weight: parseFloat(tr.querySelector(".item-weight").value) || 0,
-                is_point: point > 0, // Auto-flag
-                point_reward: point
+                type: type,
+                value: val,
+                // Legacy compatibility (optional, but good for safety)
+                is_point: (type === 'point' && val > 0),
+                point_reward: (type === 'point') ? val : 0
             });
         });
 
