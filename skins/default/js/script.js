@@ -2,12 +2,11 @@ class RouletteGame {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) {
-            console.error('Roulette Canvas not found');
             return;
         }
         this.ctx = this.canvas.getContext('2d');
 
-        console.log('RouletteGame Initializing...');
+
 
         // 1. Try Global Variable
         if (typeof ROULETTE_CONFIG !== 'undefined') {
@@ -17,16 +16,12 @@ class RouletteGame {
         else {
             const storage = document.getElementById('roulette-config-storage');
             if (storage && storage.value) {
-                console.log('Raw Config String:', storage.value); // Debug Log
                 try {
                     this.config = JSON.parse(storage.value);
-                    console.log('Loaded config from textarea:', this.config);
                 } catch (e) {
-                    console.error('Failed to parse config from textarea', e);
                     this.config = { items: [], settings: {} };
                 }
             } else {
-                console.warn('Textarea not found or empty');
                 this.config = { items: [], settings: {} };
             }
         }
@@ -35,7 +30,6 @@ class RouletteGame {
 
         // HARDCODED FALLBACK to ensure Roulette ALWAYS works even if config fails
         if (this.items.length === 0) {
-            console.warn('Config failed. Using Hardcoded Defaults.');
             this.items = [
                 { text: "1천", subText: "캡슐", color: "#FFFFFF", textColor: "#6A4DFF", weight: 0.5 },
                 { text: "15", subText: "캡슐", color: "#F0F4FF", textColor: "#333", weight: 20 },
@@ -49,7 +43,7 @@ class RouletteGame {
             ];
         }
 
-        console.log('Roulette Items Loaded:', this.items.length, this.items);
+
 
         this.currentWaitTime = 0;
         this.isSpinning = false;
@@ -67,11 +61,8 @@ class RouletteGame {
         const spinBtn = document.getElementById('spin-btn');
         if (spinBtn) {
             spinBtn.addEventListener('click', () => {
-                console.log('Spin button clicked');
                 this.spin();
             });
-        } else {
-            console.error('Spin button not found');
         }
 
         document.getElementById('close-result').addEventListener('click', () => {
@@ -188,12 +179,10 @@ class RouletteGame {
 
     spin() {
         if (this.isSpinning) {
-            console.log('Already spinning');
             return;
         }
 
         this.initAudio();
-        console.log('Requesting spin from server...');
 
         var params = {
             module: 'roulette',
@@ -207,7 +196,6 @@ class RouletteGame {
         }
 
         exec_json('roulette.procRouletteSpin', params, (ret_obj) => {
-            console.log('Server response:', ret_obj);
 
             if (ret_obj.error == -1) {
                 alert(ret_obj.message);
@@ -228,7 +216,6 @@ class RouletteGame {
             if (data.items_list && Array.isArray(data.items_list) && data.items_list.length > 0) {
                 // Check if items changed (count mismatch) to avoid unnecessary redraws
                 if (this.items.length !== data.items_list.length) {
-                    console.log('Syncing items with server...', data.items_list);
                     this.items = data.items_list;
                     this.drawWheel(); // Redraw with correct segments
                 } else {
@@ -240,21 +227,17 @@ class RouletteGame {
             this.startSpinAnimation(data.index, data.item, data.remaining_point);
 
         }, (error) => {
-            console.error('AJAX Error:', error);
             alert('서버 통신 중 오류가 발생했습니다. (Network Error)');
         });
     }
 
     startSpinAnimation(selectedIndex, itemData, remainingPoints) {
-        console.log('Starting animation:', { selectedIndex, itemData, remainingPoints });
 
         // Validate inputs
         if (typeof selectedIndex === 'undefined' || selectedIndex === null) {
-            console.error('Invalid selectedIndex');
             return;
         }
         if (!itemData) {
-            console.error('Invalid itemData');
             return;
         }
 
@@ -280,13 +263,6 @@ class RouletteGame {
         }
 
         const newRotationAngle = this.rotationAngle + totalRotationToAdd;
-
-        console.log('Rotation Calculation:', {
-            current: this.rotationAngle,
-            target: newRotationAngle,
-            diff,
-            duration
-        });
         this.animateSpin(this.rotationAngle, newRotationAngle, duration, itemData, remainingPoints);
         this.rotationAngle = newRotationAngle;
     }
@@ -313,7 +289,7 @@ class RouletteGame {
             const currentRotation = startAngle + (endAngle - startAngle) * ease;
 
             // Log every ~60 frames (approx 1 sec) or if stuck
-            if (Math.random() < 0.01) console.log('Animating...', { progress, currentRotation });
+
 
             this.canvas.style.transform = `rotate(${currentRotation}deg)`;
             if (charImg) charImg.style.transform = `rotate(${currentRotation}deg)`;
@@ -327,7 +303,6 @@ class RouletteGame {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                console.log('Animation Complete.');
                 this.isSpinning = false;
                 const skinPath = "modules/roulette/skins/default/img/";
                 if (charImg) charImg.src = skinPath + "dizzy.png";
@@ -339,10 +314,8 @@ class RouletteGame {
 
     showResult(item, remainingPoints) {
         if (!item) {
-            console.error('showResult called with null item');
             return;
         }
-        console.log('Showing result for:', item);
 
         // DELAYED UPDATE: Update Points HERE after animation
         if (typeof remainingPoints !== 'undefined') {

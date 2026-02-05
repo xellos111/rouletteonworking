@@ -13,14 +13,18 @@ class rouletteView extends roulette
         $oRouletteModel = getModel('roulette');
         $config = $oRouletteModel->getRouletteConfig();
 
-        // 사용자 포인트 정보 (옵션)
+        // 사용자 티켓 정보 (A-Mission Integration)
         if(Context::get('is_logged')) {
-            $oPointModel = getModel('point');
+            $oAMissionModel = getModel('a_mission');
             $member_srl = Context::get('logged_info')->member_srl;
-            $current_point = $oPointModel->getPoint($member_srl);
-            Context::set('current_point', $current_point);
+            if($oAMissionModel) {
+                $current_tickets = $oAMissionModel->getTicketCount($member_srl);
+            } else {
+                $current_tickets = 0;
+            }
+            Context::set('current_tickets', $current_tickets);
         } else {
-             Context::set('current_point', 0);
+             Context::set('current_tickets', 0);
         }
 
         Context::set('roulette_config', $config);
