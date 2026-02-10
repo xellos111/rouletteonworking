@@ -137,6 +137,31 @@ class rouletteController extends roulette
         $this->add('result', $output);
     }
 
+    /**
+     * @brief 티켓 수 조회
+     * AJAX 요청 처리
+     */
+    public function procRouletteGetTicketCount()
+    {
+        // 1. 로그인 체크 (비로그인시 0 반환)
+        if (!Context::get('is_logged')) {
+            return $this->createJSONResponse(true, 'OK', ['ticket_count' => 0]);
+        }
+
+        $logged_info = Context::get('logged_info');
+        $member_srl = $logged_info->member_srl;
+
+        // 2. A-Mission 연동
+        $oAMissionModel = getModel('a_mission');
+        if(!$oAMissionModel) {
+             return $this->createJSONResponse(false, 'A-Mission 모듈이 설치되지 않았습니다.');
+        }
+
+        $ticket_count = $oAMissionModel->getTicketCount($member_srl);
+        
+        return $this->createJSONResponse(true, 'OK', ['ticket_count' => $ticket_count]);
+    }
+
     private function createJSONResponse($success, $message, $data = null) {
         $output = new stdClass();
         $output->success = $success;

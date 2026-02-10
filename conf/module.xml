@@ -3,6 +3,7 @@
     <actions>
         <action name="dispRouletteIndex" type="view" index="true" />
         <action name="procRouletteSpin" type="controller" />
+        <action name="procRouletteGetTicketCount" type="controller" />
         
         <!-- Admin Actions -->
         <action name="dispRouletteAdminIndex" type="view" admin_index="true" />

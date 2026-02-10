@@ -69,6 +69,7 @@ class rouletteView extends roulette
         if (Context::get('mode') == 'modal') {
             Context::set('layout', 'none');
             Context::addHtmlHeader('<style>
+                html, body { overflow: hidden !important; }
                 #rhymix_admin_bar, .rhymix_admin_bar,
                 .xe-widget-wrapper, .xe_content_admin,
                 div[id*="admin"], div[class*="admin"],
